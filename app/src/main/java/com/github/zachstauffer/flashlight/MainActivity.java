@@ -8,10 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 
 public class MainActivity extends Activity {
 
+    private View button;
     private static Camera cam;
     private boolean isCameraOn;
 
@@ -19,16 +19,22 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         isCameraOn = false;
 
-        Button button = (Button) findViewById(R.id.led_button);
+        if (!getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA_FLASH)) {
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(1);
+        }
+
+        button = findViewById(R.id.background);
         if (button != null) {
-            button.setOnTouchListener(buttonListener);
+            button.setOnTouchListener(touchListener);
+            button.setOnClickListener(null);
         }
     }
 
-    private final View.OnTouchListener buttonListener = new View.OnTouchListener() {
+    private final View.OnTouchListener touchListener = new View.OnTouchListener() {
         public boolean onTouch(View v, MotionEvent event) {
             if (event.getAction() == MotionEvent.ACTION_UP){
                 turnOffLED();
@@ -37,6 +43,16 @@ public class MainActivity extends Activity {
                 turnOnLED();
             }
             return false;
+        }
+    };
+
+    private final View.OnClickListener clickListener = new View.OnClickListener() {
+        public void onClick(View v) {
+            if (isCameraOn) {
+                turnOffLED();
+            } else {
+                turnOnLED();
+            }
         }
     };
 
@@ -53,39 +69,39 @@ public class MainActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.touchHold) {
+            turnOffLED();
+            button.setOnTouchListener(touchListener);
+            button.setOnClickListener(null);
+        } else if (id == R.id.onOff) {
+            turnOffLED();
+            button.setOnTouchListener(null);
+            button.setOnClickListener(clickListener);
         }
         return super.onOptionsItemSelected(item);
     }
 
     public void turnOnLED() {
         try {
-            if (getPackageManager().hasSystemFeature(
-                    PackageManager.FEATURE_CAMERA_FLASH)) {
-                cam = Camera.open();
-                Camera.Parameters p = cam.getParameters();
-                p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                cam.setParameters(p);
-                cam.startPreview();
-                isCameraOn = true;
-            }
+            cam = Camera.open();
+            Camera.Parameters p = cam.getParameters();
+            p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+            cam.setParameters(p);
+            cam.startPreview();
+            isCameraOn = true;
         } catch (Exception e) {
-
+            // Do nothing
         }
     }
 
     public void turnOffLED() {
         try {
-            if (getPackageManager().hasSystemFeature(
-                    PackageManager.FEATURE_CAMERA_FLASH)) {
-                cam.stopPreview();
-                cam.release();
-                cam = null;
-                isCameraOn = false;
-            }
+            cam.stopPreview();
+            cam.release();
+            cam = null;
+            isCameraOn = false;
         } catch (Exception e) {
-
+            // Do nothing
         }
     }
 }

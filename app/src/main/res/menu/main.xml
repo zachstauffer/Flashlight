@@ -1,8 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity" >
-    <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
+    <item android:id="@+id/touchHold"
+        android:title="@string/touch_and_hold"
         android:orderInCategory="100"
+        android:showAsAction="never" />
+    <item android:id="@+id/onOff"
+        android:title="@string/on_and_off"
+        android:orderInCategory="200"
         android:showAsAction="never" />
 </menu>
