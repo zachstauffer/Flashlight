@@ -11,11 +11,12 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/text"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="center"
         android:textSize="36sp"
         android:textColor="@color/text"
-        android:text="@string/instructions" />
+        android:text="@string/touch_instruct" />
 
 </RelativeLayout>

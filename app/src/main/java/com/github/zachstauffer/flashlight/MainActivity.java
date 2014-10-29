@@ -8,10 +8,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
     private View button;
+    private TextView text;
     private static Camera cam;
     private boolean isCameraOn;
 
@@ -32,6 +34,7 @@ public class MainActivity extends Activity {
             button.setOnTouchListener(touchListener);
             button.setOnClickListener(null);
         }
+        text = (TextView) findViewById(R.id.text);
     }
 
     private final View.OnTouchListener touchListener = new View.OnTouchListener() {
@@ -73,10 +76,12 @@ public class MainActivity extends Activity {
             turnOffLED();
             button.setOnTouchListener(touchListener);
             button.setOnClickListener(null);
+            text.setText(R.string.touch_instruct);
         } else if (id == R.id.onOff) {
             turnOffLED();
             button.setOnTouchListener(null);
             button.setOnClickListener(clickListener);
+            text.setText(R.string.click_instruct);
         }
         return super.onOptionsItemSelected(item);
     }
